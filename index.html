@@ -1,0 +1,70 @@
+<html>
+<head></head>
+<body>
+<button type="button" id="connect-spp">Connect Bluetooth Serial Port Profile</button><br/>
+<button type="button" id="connect-usb">Connect USB serial port</button><br/>
+<button type="button" id="write-usb">Write current time to USB serial port</button>
+<script>
+
+let sppPort = null;
+let usbPort = null;
+
+const connectSppButton = document.getElementById('connect-spp');
+connectSppButton.addEventListener('click', connectSpp);
+const connectUsbButton = document.getElementById('connect-usb');
+connectUsbButton.addEventListener('click', connectUsb);
+const writeUsbButton = document.getElementById('write-usb');
+writeUsbButton.addEventListener('click', writeUsb);
+
+async function connectSpp() {
+  const SPP_UUID = '00001101-0000-1000-8000-00805f9b34fb';
+  sppPort = await navigator.serial.requestPort({
+      allowedBluetoothServiceClassIds: [SPP_UUID],
+      filters: [{bluetoothServiceClassId: SPP_UUID}],
+  });
+  
+  if (sppPort) {
+    console.log('connected to a Bluetooth Serial Port Profile port', sppPort.getInfo());
+    await sppPort.open({baudRate: 9600});
+    const textDecoder = new TextDecoderStream();
+    const reader = textDecoder.readable.getReader();
+    const readableStreamClosed = sppPort.readable.pipeTo(textDecoder.writable);
+    while (true) {
+      const {value, done} = await reader.read();
+      if (done) {
+        reader.releaseLock();
+        break;
+      }
+      console.log(`Received from Bluetooth serial port: ${value}`);
+    }
+    await readableStreamClosed.catch(() => {});
+    await port.close();
+  }
+}
+
+async function connectUsb() {
+  usbPort = await navigator.serial.requestPort({filters: [{
+      usbVendorId: 4292,
+      usbProductId: 60000,
+  }]});
+  
+  if (usbPort) {
+    console.log('connected to a USB serial port', usbPort.getInfo());
+    await usbPort.open({baudRate: 9600});
+  }
+}
+
+async function writeUsb() {
+  const textEncoder = new TextEncoderStream();
+  const writableStreamClosed = textEncoder.readable.pipeTo(usbPort.writable);
+  const writer = textEncoder.writable.getWriter();
+  const value = (new Date(Date.now())).toLocaleTimeString();
+  console.log(`Writing to USB serial port: ${value}`)
+  writer.write(value);
+  writer.close();
+  await writableStreamClosed;
+}
+
+</script>
+</body>
+</html>
