@@ -4,6 +4,7 @@
 <button type="button" id="connect-spp">Connect Bluetooth Serial Port Profile</button><br/>
 <button type="button" id="connect-usb">Connect USB serial port</button><br/>
 <button type="button" id="write-usb">Write current time to USB serial port</button>
+<textarea id="logger">Logs here</textarea>
 <script>
 
 let sppPort = null;
@@ -18,7 +19,7 @@ writeUsbButton.addEventListener('click', writeUsb);
 
 async function connectSpp() {
   //const SPP_UUID = '00001101-0000-1000-8000-00805f9b34fb';
-  const SPP_UID = '00001800-0000-1000-8000-00805f9b34fb';
+  const SPP_UUID = '00001800-0000-1000-8000-00805f9b34fb';
   sppPort = await navigator.serial.requestPort({
       allowedBluetoothServiceClassIds: [SPP_UUID],
       filters: [{bluetoothServiceClassId: SPP_UUID}],
@@ -36,7 +37,8 @@ async function connectSpp() {
         reader.releaseLock();
         break;
       }
-      console.log(`Received from Bluetooth serial port: ${value}`);
+      console.log(`from Bluetooth: ${value}`);
+      document.querySelector('#logger').innerHTML+=`<br>from Bluetooth: ${value}`;
     }
     await readableStreamClosed.catch(() => {});
     await port.close();
