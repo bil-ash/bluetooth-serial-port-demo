@@ -19,7 +19,7 @@ writeUsbButton.addEventListener('click', writeUsb);
 async function connectSpp() {
   const SPP_UUID = '00001101-0000-1000-8000-00805f9b34fb';
   sppPort = await navigator.serial.requestPort({
-      allowedBluetoothServiceClassIds: [SPP_UUID]/*,
+      /*allowedBluetoothServiceClassIds: [SPP_UUID]*//*,
       filters: [{bluetoothServiceClassId: SPP_UUID}],*/
   });
   
