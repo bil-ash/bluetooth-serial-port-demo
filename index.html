@@ -18,7 +18,7 @@ const writeUsbButton = document.getElementById('write-usb');
 writeUsbButton.addEventListener('click', writeUsb);
 
 async function connectSpp() {
-  //const SPP_UUID = '00001101-0000-1000-8000-00805f9b34fb';
+  const SPP_UUID = ['00001101-0000-1000-8000-00805f9b34fb',;
   let range = {
   from: 1001,
   to: 1999,
@@ -30,10 +30,11 @@ async function connectSpp() {
   }
 };
   
-  const SPP_UUID = '00001800-0000-1000-8000-00805f9b34fb';
+  const SPP_UUID = ['00001800-0000-1000-8000-00805f9b34fb','0000110a-0000-1000-8000-00805f9b34fb','0000112f-0000-1000-8000-00805f9b34fb',
+                    '00001801-0000-1000-8000-00805f9b34fb','0000111f-0000-1000-8000-00805f9b34fb','00001132-0000-1000-8000-00805f9b34fb']
   sppPort = await navigator.serial.requestPort({
-      allowedBluetoothServiceClassIds: [...range]/*,
-      filters: [{bluetoothServiceClassId: SPP_UUID}],*/
+      allowedBluetoothServiceClassIds: [SPP_UUID],
+      filters: [{bluetoothServiceClassId: SPP_UUID}],
   });
   
   if (sppPort) {
