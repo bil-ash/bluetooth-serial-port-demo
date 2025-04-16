@@ -21,11 +21,11 @@ async function connectSpp() {
   
 
   
-  const SPP_UUID = '0000110a-0000-1000-8000-00805f9b34fb';
-  sppPort = await navigator.serial.requestPort(/*{
+  const SPP_UUID = '00001101-0000-1000-8000-00805f9b34fb';
+  sppPort = await navigator.serial.requestPort({
       allowedBluetoothServiceClassIds: [SPP_UUID],
       filters: [{bluetoothServiceClassId: SPP_UUID}],
-  }*/);
+  });
   
   if (sppPort) {
     console.log('connected to a Bluetooth Serial Port Profile port', sppPort.getInfo());
