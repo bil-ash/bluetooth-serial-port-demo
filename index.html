@@ -19,22 +19,13 @@ writeUsbButton.addEventListener('click', writeUsb);
 
 async function connectSpp() {
   
-  let range = {
-  from: 1001,
-  to: 1999,
 
-  *[Symbol.iterator]() { // a shorthand for [Symbol.iterator]: function*()
-    for(let value = this.from; value <= this.to; value++) {
-      yield '0000'+value+'-0000-1000-8000-00805f9b34fb';
-    }
-  }
-};
   
   const SPP_UUID = '0000110a-0000-1000-8000-00805f9b34fb';
-  sppPort = await navigator.serial.requestPort({
+  sppPort = await navigator.serial.requestPort(/*{
       allowedBluetoothServiceClassIds: [SPP_UUID],
       filters: [{bluetoothServiceClassId: SPP_UUID}],
-  });
+  }*/);
   
   if (sppPort) {
     console.log('connected to a Bluetooth Serial Port Profile port', sppPort.getInfo());
